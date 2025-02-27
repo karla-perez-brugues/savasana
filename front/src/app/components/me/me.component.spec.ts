@@ -14,6 +14,7 @@ import {UserService} from "../../services/user.service";
 import {User} from "../../interfaces/user.interface";
 import {Observable, of} from "rxjs";
 import {SessionInformation} from "../../interfaces/sessionInformation.interface";
+import {By} from "@angular/platform-browser";
 
 describe('MeComponent', () => {
   let component: MeComponent;
@@ -98,6 +99,19 @@ describe('MeComponent', () => {
       expect(matSnackBar.open).toHaveBeenCalledWith("Your account has been deleted !", 'Close', { duration: 3000 });
       expect(sessionService.logOut).toHaveBeenCalled();
       expect(router.navigate).toHaveBeenCalledWith(['/']);
+    });
+  });
+
+  describe('back', () => {
+    it('should go back to previous page', async () => {
+      jest.spyOn(window.history, 'back').mockImplementation();
+
+      window.history.back = jest.fn();
+
+      let backButton = fixture.debugElement.query(By.css('button[mat-icon-button]'));
+      backButton.triggerEventHandler('click');
+
+      expect(window.history.back).toHaveBeenCalled();
     });
   });
 });

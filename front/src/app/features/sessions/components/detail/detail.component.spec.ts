@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -7,7 +7,7 @@ import { expect } from '@jest/globals';
 import { SessionService } from '../../../../services/session.service';
 
 import { DetailComponent } from './detail.component';
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { SessionApiService } from "../../services/session-api.service";
 import { TeacherService } from "../../../../services/teacher.service";
 import { Session } from "../../interfaces/session.interface";
@@ -18,6 +18,7 @@ describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
 
+  let httpClient: HttpClient;
   let sessionApiService: SessionApiService;
   let teacherService: TeacherService;
   let matSnackBar: MatSnackBar;
@@ -37,8 +38,8 @@ describe('DetailComponent', () => {
 
   const session: Session = {
     id: 1,
-    name: 'name',
-    description: 'description',
+    name: 'Yoga session',
+    description: 'Session for beginners',
     date: new Date(),
     teacher_id: 12,
     users: [1,2],
@@ -66,6 +67,7 @@ describe('DetailComponent', () => {
       providers: [{ provide: SessionService, useValue: mockSessionService }],
     }).compileComponents();
 
+    httpClient = TestBed.inject(HttpClient);
     sessionApiService = TestBed.inject(SessionApiService);
     teacherService = TestBed.inject(TeacherService);
     matSnackBar = TestBed.inject(MatSnackBar);
@@ -94,15 +96,15 @@ describe('DetailComponent', () => {
 
   describe('delete', () => {
     it('should delete session', () => {
-      component.sessionId = 'session-id';
+      component.sessionId = '1';
 
-      jest.spyOn(sessionApiService, 'delete').mockImplementation(() => of({}));
+      jest.spyOn(httpClient, 'delete').mockImplementation(() => of({}));
       jest.spyOn(matSnackBar, 'open').mockImplementation();
       jest.spyOn(router, 'navigate').mockImplementation();
 
       component.delete();
 
-      expect(sessionApiService.delete).toHaveBeenCalledWith('session-id');
+      expect(httpClient.delete).toHaveBeenCalledWith('api/session/1');
       expect(matSnackBar.open).toHaveBeenCalledWith('Session deleted !', 'Close', { duration: 3000 });
       expect(router.navigate).toHaveBeenCalledWith(['sessions']);
     });
@@ -110,7 +112,7 @@ describe('DetailComponent', () => {
 
   describe('participate', () => {
     it('should call the api service', () => {
-      component.sessionId = 'session-id';
+      component.sessionId = '1';
 
       jest.spyOn(sessionApiService, 'participate').mockImplementation(() => of(void 0));
       jest.spyOn(sessionApiService, 'detail').mockReturnValue(sessionObservable);

@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -26,6 +26,7 @@ describe('FormComponent', () => {
   let matSnackBar: MatSnackBar;
   let sessionApiService: SessionApiService;
   let router: Router;
+  let httpClient: HttpClient;
 
   const mockSessionService = {
     sessionInformation: {
@@ -69,6 +70,7 @@ describe('FormComponent', () => {
     matSnackBar = TestBed.inject(MatSnackBar);
     sessionApiService = TestBed.inject(SessionApiService);
     router = TestBed.inject(Router);
+    httpClient = TestBed.inject(HttpClient);
 
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
@@ -109,13 +111,13 @@ describe('FormComponent', () => {
       component.sessionForm?.controls['teacher_id'].setValue(12);
       component.sessionForm?.controls['date'].setValue(new Date('2025-02-19 14:42:42'));
 
-      jest.spyOn(sessionApiService, 'create').mockReturnValue(sessionObservable);
+      jest.spyOn(httpClient, 'post').mockReturnValue(sessionObservable);
       jest.spyOn(matSnackBar, 'open').mockImplementation();
       jest.spyOn(router, 'navigate').mockImplementation();
 
       component.submit();
 
-      expect(sessionApiService.create).toHaveBeenCalledWith(component.sessionForm?.value);
+      expect(httpClient.post).toHaveBeenCalledWith('api/session', component.sessionForm?.value);
       expect(matSnackBar.open).toHaveBeenCalledWith('Session created !', 'Close', { duration: 3000 });
       expect(router.navigate).toHaveBeenCalledWith(['sessions']);
     });
@@ -132,14 +134,14 @@ describe('FormComponent', () => {
       component.onUpdate = true;
 
       jest.spyOn(activatedRoute.snapshot.paramMap, 'get').mockReturnValue('1');
-      jest.spyOn(sessionApiService, 'update').mockReturnValue(sessionObservable);
+      jest.spyOn(httpClient, 'put').mockReturnValue(sessionObservable);
       jest.spyOn(matSnackBar, 'open').mockImplementation();
       jest.spyOn(router, 'navigate').mockImplementation();
 
       component.ngOnInit();
       component.submit();
 
-      expect(sessionApiService.update).toHaveBeenCalledWith('1', component.sessionForm?.value);
+      expect(httpClient.put).toHaveBeenCalledWith('api/session/1', component.sessionForm?.value);
       expect(matSnackBar.open).toHaveBeenCalledWith('Session updated !', 'Close', { duration: 3000 });
       expect(router.navigate).toHaveBeenCalledWith(['sessions']);
     })
