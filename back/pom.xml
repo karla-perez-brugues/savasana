@@ -140,8 +140,23 @@
 							</rules>
 						</configuration>
 					</execution>
-
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>com/openclassrooms/starterjwt/dto/*</exclude>
+						<exclude>com/openclassrooms/starterjwt/exception/*</exclude>
+						<exclude>com/openclassrooms/starterjwt/models/*</exclude>
+						<exclude>com/openclassrooms/starterjwt/payload/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>9</source>
+					<target>9</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
