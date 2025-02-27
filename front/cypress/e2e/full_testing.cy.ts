@@ -1,0 +1,7 @@
+import './login.cy'
+import './register.cy'
+import './me.cy'
+import './not-found.cy'
+import './session-details.cy'
+import './session-creation.cy'
+import './session-edition.cy'
